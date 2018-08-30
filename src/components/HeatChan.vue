@@ -24,13 +24,18 @@ export default {
   components: {
     heatMap: D3HeatMap
   },
+  data() {
+    return {
+      name: "Heat Map 1"
+    };
+  },
   computed: {
     ...mapGetters(["data", "height"])
   },
   methods: {
     selectLine(data) {
-      console.log(data);
-      this.bc.postMessage(data.date);
+      const selectedObj = { date: data.date, sender: this.name };
+      this.bc.postMessage(selectedObj);
     }
   },
   created() {

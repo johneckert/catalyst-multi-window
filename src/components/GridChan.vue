@@ -18,6 +18,14 @@
         </v-card>
       </v-flex>  
     </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-card :height="height">
+          <v-card-text v-if="filtered">Filter Set By: {{ filteredBy }}</v-card-text>
+          <v-btn @click="removeFilter" v-if="filtered">Clear Filter</v-btn>
+        </v-card>
+      </v-flex>  
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -29,6 +37,12 @@ export default {
   components: {
     AgGridVue
   },
+  data() {
+    return {
+      filtered: false,
+      filteredBy: "test"
+    };
+  },
   computed: {
     ...mapGetters(["data", "gridCols", "options", "height"])
   },
@@ -38,22 +52,24 @@ export default {
       this.columnApi = params.columnApi;
       this.gridApi.sizeColumnsToFit();
     },
-    setFilter(label) {
+    setFilter(data) {
       if (this.gridApi) {
-        this.gridApi.setQuickFilter(label);
+        this.gridApi.setQuickFilter(data.date);
+        this.filtered = true;
+        this.filteredBy = data.sender;
       }
     },
     removeFilter() {
       if (this.gridApi) {
         this.gridApi.setQuickFilter(null);
+        this.filtered = false;
       }
     }
   },
   created() {
     this.bc = new BroadcastChannel("data_channel");
     this.bc.onmessage = event => {
-      // this.setFilter(event.data);
-      console.log("channel", event.data);
+      this.setFilter(event.data);
     };
   },
   beforeDestroy() {

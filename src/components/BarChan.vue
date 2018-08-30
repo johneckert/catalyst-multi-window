@@ -24,6 +24,11 @@ export default {
   components: {
     barChart: D3BarChart
   },
+  data() {
+    return {
+      name: "Bar Chart 1"
+    };
+  },
   computed: {
     ...mapGetters(["data", "height"]),
     barData() {
@@ -37,8 +42,8 @@ export default {
   },
   methods: {
     selectBar(data) {
-      console.log(data);
-      this.bc.postMessage(data.x);
+      const selectedObj = { date: data.x, sender: this.name };
+      this.bc.postMessage(selectedObj);
     }
   },
   created() {

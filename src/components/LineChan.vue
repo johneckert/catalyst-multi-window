@@ -24,6 +24,11 @@ export default {
   components: {
     lineChart: D3LineChart
   },
+  data() {
+    return {
+      name: "Line Chart 1"
+    };
+  },
   computed: {
     ...mapGetters(["data", "height"]),
     lineData() {
@@ -37,8 +42,22 @@ export default {
   },
   methods: {
     selectLine(data) {
-      console.log(data);
-      this.bc.postMessage(data.volume);
+      let parsedDate = this.formatDate(data.date);
+      const selectedObj = { date: parsedDate, sender: this.name };
+      this.bc.postMessage(selectedObj);
+    },
+    formatDate(dateObj) {
+      let date = new Date(dateObj);
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let year = date.getFullYear();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      if (month < 10) {
+        month = "0" + month;
+      }
+      return `${year}-${month}-${day}`;
     }
   },
   created() {
